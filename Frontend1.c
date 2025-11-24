@@ -2,6 +2,7 @@
 #include "Backend.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <allegro5/allegro_image.h>
 
 //bitmap
 ALLEGRO_BITMAP* borde_bitmap(int w, int h, ALLEGRO_COLOR fill, ALLEGRO_COLOR borde)
@@ -140,6 +141,13 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
         al_destroy_event_queue(p->queue);
         return 0;
     }
+    if (!al_init_image_addon()) { 
+        fprintf(stderr, "falla al inicializar allegro_image\n");
+        al_destroy_display(p->display);
+        al_destroy_event_queue(p->queue);
+        al_destroy_timer(p->timer);
+        return 0;
+    }
 
     //bitmaps
     al_init_primitives_addon();              
@@ -156,17 +164,15 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
         return 0;
     }
 
-    //bloques
-    for (int t = 1; t <= 5; t++){ // recorro los tipos de bloque 
-    ALLEGRO_COLOR fill= color_for_brick(t); //color de relleno
-        ALLEGRO_COLOR border = al_map_rgb(60,60,60); //borde
-        p->bmp_brick[t] = borde_bitmap(BR_W - 2, BR_H - 2, fill, border);
-        if(!p->bmp_brick[t]){ 
-            fprintf(stderr, "sin memoria ladrillo\n"); 
-            for(int k = 1; k < t; ++k){ 
-                if (p->bmp_brick[k]){
-                    al_destroy_bitmap(p->bmp_brick[k]); 
-                }
+    //bloques con PNG
+    char* brick_files[6] = { NULL, "block yellow.png", "block red.png", "block purple.png", "block green.png", "block blue.png"};
+
+    for (int t = 1; t <= 5; t++) {
+        p->bmp_brick[t] = al_load_bitmap(brick_files[t]);
+        if (!p->bmp_brick[t]) {
+            fprintf(stderr, "no pude cargar %s\n", brick_files[t]);
+            for (int k = 1; k < t; ++k) {
+                if (p->bmp_brick[k]) al_destroy_bitmap(p->bmp_brick[k]);
             }
             al_destroy_bitmap(p->bmp_background);
             al_destroy_display(p->display);
@@ -176,40 +182,36 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
         }
     }
 
-    //bola
-    int rpx = (g->ball.radio * p->sx); // radio de la bola en píxeles
-    p->bmp_ball = ball_bitmap(rpx, al_map_rgb(255,120,200), al_map_rgb(180,60,120)); //bola rosa borde gris 
-    if(!p->bmp_ball){ 
-        fprintf(stderr, "sin memoria bola\n"); 
+    //bola con PNG
+    int rpx = (g->ball.radio * p->sx);
+    p->bmp_ball = ball_bitmap(rpx, /* fill */  al_map_rgb(255,105,180), al_map_rgb(40,40,40));
+    if (!p->bmp_ball){
+        fprintf(stderr, "sin memoria bola\n");
         al_destroy_bitmap(p->bmp_paddle);
-        for(int k = 1; k <= 5; k++){ 
-            if(p->bmp_brick[k]){
-                al_destroy_bitmap(p->bmp_brick[k]); 
-            }
+        for (int k = 1; k <= 5; ++k){ 
+            if (p->bmp_brick[k]) al_destroy_bitmap(p->bmp_brick[k]);
         }
         al_destroy_bitmap(p->bmp_background);
         al_destroy_display(p->display);
         al_destroy_event_queue(p->queue);
         al_destroy_timer(p->timer);
-        return 0; 
+        return 0;
     }
 
-    //vaus
-    int paddle_w = (2*g->vaus.half + 1) * p->sx; //ancho del vaus en píxeles
-    int paddle_h = 12; //alto del vaus en píxeles
-    p->bmp_paddle = paddle_bitmap(paddle_w, paddle_h); //creo el bitmap 
-    if(!p->bmp_paddle){ 
-        fprintf(stderr, "sin memoria vaus\n"); 
-        for(int k = 1; k <= 5; k++){ 
-            if(p->bmp_brick[k]){
-                al_destroy_bitmap(p->bmp_brick[k]); 
+    //vaus con PNG 
+    p->bmp_paddle = al_load_bitmap("paddle.png");
+    if (!p->bmp_paddle) {
+        fprintf(stderr, "no pude cargar paddle.png\n");
+        for (int k = 1; k <= 5; ++k) {
+            if (p->bmp_brick[k]){ 
+                al_destroy_bitmap(p->bmp_brick[k]);
             }
         }
         al_destroy_bitmap(p->bmp_background);
         al_destroy_display(p->display);
         al_destroy_event_queue(p->queue);
         al_destroy_timer(p->timer);
-        return 0; 
+        return 0;
     }
 
     //registro en la cola
@@ -326,7 +328,16 @@ void allegro_draw(allegro_t* p, game_t* g){
                 if(t > 5){
                     t = 5;
                 }
-                al_draw_bitmap(p->bmp_brick[t], b->x, b->y, 0);
+                //ajusto tamaño de la imagen
+                float dst_x= b->x + 1.0;
+                float dst_y= b->y + 1.0;
+                float dst_w= BR_W - 2.0;
+                float dst_h= BR_H - 2.0;
+                
+                int src_w= al_get_bitmap_width (p->bmp_brick[t]);
+                int src_h= al_get_bitmap_height(p->bmp_brick[t]);
+                
+                al_draw_scaled_bitmap(p->bmp_brick[t], 0, 0, src_w, src_h, dst_x, dst_y, dst_w, dst_h, 0);
         
             }
         }
@@ -341,13 +352,29 @@ void allegro_draw(allegro_t* p, game_t* g){
 
     y_px -= (dst_h - p->sy) * 0.5;
 
-    al_draw_scaled_bitmap(p->bmp_paddle, 0, 0, al_get_bitmap_width(p->bmp_paddle), al_get_bitmap_height(p->bmp_paddle), left_px, y_px, dst_w, dst_h, 0);
+    int pad_src_w = al_get_bitmap_width (p->bmp_paddle);
+    int pad_src_h = al_get_bitmap_height(p->bmp_paddle);
+    
+    float pad_dst_w = (2*g->vaus.half + 1); //ancho del vaus
+    float pad_dst_h = 12.0; //alto del vaus
+    
+    al_draw_scaled_bitmap( p->bmp_paddle, 0, 0, pad_src_w, pad_src_h,left_px, y_px, pad_dst_w, pad_dst_h, 0);
 
     //bola 
-    int rpx = al_get_bitmap_width(p->bmp_ball) / 2; //radio en píxeles
-    float bx = g->ball.p.x * p->sx - rpx; //posición x en píxeles
-    float by = g->ball.p.y * p->sy - rpx; //posición y en píxeles
-    al_draw_bitmap(p->bmp_ball, bx, by, 0);
+    int ball_src_w = al_get_bitmap_width (p->bmp_ball);
+    int ball_src_h = al_get_bitmap_height(p->bmp_ball);
+    
+    //diametro
+    float d = 2.0 * g->ball.radio;
+    
+    //centro
+    float bx = g->ball.p.x * p->sx - d*0.5;
+    float by = g->ball.p.y * p->sy - d*0.5;
+    
+    //la hago rosa
+    ALLEGRO_COLOR rosa = al_map_rgba(255, 120, 200, 255);
+    
+    al_draw_tinted_scaled_bitmap(p->bmp_ball, rosa, 0, 0, ball_src_w, ball_src_h, bx, by, d, d, 0);
 
     al_flip_display(); //muestro 
 
