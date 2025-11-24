@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include "Backend.h"
+#include "Frontend1.h"
+
+int main(void){
+    game_t g;
+    allegro_t al;
+
+    // lógica del juego
+    game_init(&g);
+
+    // tamaño de ventana (ajustá si querés)
+    const int win_w = ANCHO;
+    const int win_h = ALTO;
+
+    // inicializar Allegro (sin audio)
+    if(!allegro_init(&al, &g, win_w, win_h)){
+        fprintf(stderr, "Error: no se pudo inicializar Allegro o assets gráficos.\n");
+        return 1;
+    }
+
+    int quit = 0;
+    while(!quit){
+        int move = 0, pause = 0, reset = 0;
+        allegro_read_input(&al, &g, &move, &pause, &reset, &quit);
+
+        if(allegro_should_draw(&al)){
+            game_step(&g, 1.0f / FPS, move, pause, reset);
+            allegro_draw(&al, &g);
+        }
+    }
+
+    allegro_shutdown(&al);
+    return 0;
+}
