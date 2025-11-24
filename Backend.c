@@ -409,6 +409,7 @@ void game_init(game_t * p){
     p->score = 0; 
     p->game_over = 0;
     p->ball.speed = 240.0;
+    p->ball.radio = BALL_R;
     p->phase = 1; 
     p->ball_waiting=0; 
     p->wait_time= 0.0; 
