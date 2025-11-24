@@ -131,7 +131,7 @@ void bola_choque_vaus(game_t* g){
     float rx = g->vaus.x - g->vaus.half;
     float ry = g->vaus.y - rh * 0.5f;
 
-    int choc = ball_hit(g, rx, ry, rw, rh, 1);
+    ball_hit(g, rx, ry, rw, rh, 1);
 
 }
 
@@ -185,18 +185,21 @@ void bricks_reset_level(game_t* g)
             } 
             else if (niv == 2) {
                 //nivel 2, arco 
-                int top_row= 0;
-                int left_col= 0;
-                int right_col= BR_COLS - 1;
-
-                if (i == top_row || j == left_col || j == right_col) {
-                    // estamos en la fila de arriba o en una de las columnas laterales
-                    present = 1; //hay bloque
+                int post_thick= 2; //grosor 
+                int top_rows= 1; //filas de arriba 
+                int bottom_rows= 1; //filas de abajo
+            
+                int is_top= (i < top_rows);
+                int is_bottom= (i >= BR_ROWS - bottom_rows);
+                int is_left_post= (j < post_thick);
+                int is_right_post= (j >= BR_COLS - post_thick);
+            
+                if (is_top || is_bottom || is_left_post || is_right_post) {
+                    present = 1;   // pongo ladrillo en el borde
                 } 
                 else {
-                    present = 0; //interior vacío del arco
+                    present = 0;   // dentro del arco queda vacío
                 }
-
             } 
             else { 
                 //nivel 3, piramide 
@@ -410,7 +413,16 @@ void game_init(game_t * p){
     p->ball_waiting=0; 
     p->wait_time= 0.0; 
     bricks_init(p); //arma la pared
-    ball_restart(p, 0);      
+
+    //bola en el centro, quieta
+    p->ball.p.x= ANCHO * 0.5;
+    p->ball.p.y= ALTO  * 0.33;
+    p->ball.vel.x= 0.0;
+    p->ball.vel.y= 0.0;
+
+    //modo espera inicial
+    p->ball_waiting= 1;
+    p->wait_time= 1.0; 
 }
 
 void game_step(game_t* p, float time, int move, int pause, int reset){
