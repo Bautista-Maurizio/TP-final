@@ -3,7 +3,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #ifndef FRONTEND1_H
 #define FRONTEND1_H
@@ -27,6 +28,9 @@ typedef struct {
     ALLEGRO_BITMAP* bmp_ball; //bola 
     ALLEGRO_FONT* font_small;  //texto para info
     ALLEGRO_FONT* font_big; //texto para titulos y contdown 
+    ALLEGRO_AUDIO_STREAM* musica;
+    ALLEGRO_SAMPLE* efecto_rebote;
+    
 
 }allegro_t;
 

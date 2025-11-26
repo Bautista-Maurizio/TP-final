@@ -246,6 +246,15 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
             return 0;
         }
     }
+    //musica 
+    al_install_audio();
+    al_init_acodec_addon();
+    al_reserve_samples(16);
+    p->musica = al_load_audio_stream("musica.ogg", 4, 1024);
+    // Configurar para que se repita (Loop)
+    al_set_audio_stream_playmode(p->musica, ALLEGRO_PLAYMODE_LOOP);
+        // Conectar al mixer (¡Esto hace que empiece a sonar!)
+    al_attach_audio_stream_to_mixer(p->musica, al_get_default_mixer());
 
     //registro en la cola
     al_register_event_source(p->queue, al_get_display_event_source(p->display));
@@ -482,5 +491,8 @@ void allegro_shutdown(allegro_t* p){
     if (p->font_small){ 
         al_destroy_font(p->font_small);
     }
+    if (p->musica) {
+        al_destroy_audio_stream(p->musica);
+        }
    
 }

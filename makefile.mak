@@ -1,6 +1,6 @@
 arkanoid: Backend.o Frontend1.o Stage.o main.o
 	gcc Backend.o Frontend1.o Stage.o main.o -o arkanoid \
-	    -lallegro_primitives -lallegro_image -lallegro_ttf -lallegro_font -lallegro -lm
+	    -lallegro_primitives -lallegro_image -lallegro_ttf -lallegro_font -lallegro -lallegro_audio -lallegro_acodec -lm
 
 Backend.o: Backend.c Backend.h Frontend1.h Stage.h
 	gcc Backend.c -c -Wall 
