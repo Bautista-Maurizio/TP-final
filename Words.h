@@ -8,7 +8,8 @@
 #define STEP_MS 70   // tiempo de scroll
 
 // Macro para definir columnas de 5 filas
-#define COL(b4,b3,b2,b1,b0)  ((unsigned char)((((b4)&1)<<4)|(((b3)&1)<<3)|(((b2)&1)<<2)|(((b1)&1)<<1)|((b0)&1)))
+#define COL(b4,b3,b2,b1,b0) \
+ ((unsigned char)((((b0)&1)<<4)|(((b1)&1)<<3)|(((b2)&1)<<2)|(((b3)&1)<<1)|((b4)&1)))
 
 // Funciones de "vidas"
 void scroll_text_vidas(const char* s, int step, int pad_cols);
