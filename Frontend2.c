@@ -1,4 +1,4 @@
-// frontend2.c  --- versión corregida para display 16x16
+// frontend2.c  --- versión 16x16 ajustada y proporcional
 #include <stdio.h>
 #include <unistd.h>
 #include <math.h>
@@ -32,13 +32,11 @@ void read_joy(joy_t *p){
 
     joyinfo_t j = joy_read();
 
-    // Movimiento horizontal
     if (j.x > MOVE)
         p->move = 1;
     else if (j.x < -MOVE)
         p->move = -1;
 
-    // Botón
     int pressed = (j.sw != J_NOPRESS);
 
     if (pressed)
@@ -93,8 +91,6 @@ void led_on(int x, int y){
 // -----------------------------------
 // MAPEO de coordenadas del mundo → display 16x16
 // -----------------------------------
-// NOTA: ANCHO y ALTO son dimensiones de tu backend.
-// Se normaliza a 0–15 para que quede centrado y proporcional.
 int map_x(float x){
     if (x < 0) x = 0;
     if (x > ANCHO) x = ANCHO;
@@ -151,13 +147,13 @@ void pi_draw(game_t *g){
 
     draw_bricks(g);
 
-    // --- VAUS ---
-    float vaus_px = 2.0f * g->vaus.half;
-
+    // --- VAUS PROPORCIONAL ---
     int cx = map_x(g->vaus.x);
     int vy = map_y(g->vaus.y);
 
-    int len = (int)lroundf((vaus_px / ANCHO) * 15.0f);
+    // calculo ancho proporcional
+    float vaus_width_ratio = g->vaus.half / (ANCHO * 0.5f); // 0..1
+    int len = (int)lroundf(vaus_width_ratio * 15.0f);        // escala 0..15
 
     if (len < 2) len = 2;
     if (len > 16) len = 16;
