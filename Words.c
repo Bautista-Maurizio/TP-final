@@ -115,8 +115,9 @@ unsigned char* digit_glyph(int d){
 // dibuja una columna (mantengo tu build_col)
 void build_col(int X, int topY, unsigned char colbits){
     for (int row = 0; row < GLYPH_H; row++){
+        int inverted_row = (GLYPH_H - 1) - row;
         if ((colbits >> row) & 1) {
-            led_on(X, topY + row);
+            led_on(X, topY + inverted_row);
         }
     }
 }
