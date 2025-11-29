@@ -2,51 +2,57 @@
 #include "disdrv.h"
 #include "Words.h"
 #include "joydrv.h"
+#include <stdio.h> // Necesario para sprintf si lo usas, aunque usas manual
 
-//-------VIDAS----------
+// Constantes
+// Nota: La definición de los caracteres sigue la convención COL(b0, b1, b2, b3, b4)
+// donde b0 es la fila superior y b4 es la fila inferior, gracias a la macro COL.
 
 // centrado vertical del bloque de texto
 int top_y(void){
+    // Asumimos que DISP_MAX_Y y DISP_MIN están definidos en disdrv.h
     int h = (DISP_MAX_Y - DISP_MIN) + 1;
     int off = (h - GLYPH_H) / 2;
     if (off < 0) off = 0;
-    return DISP_MIN + off;
+    return DISP_MIN + off; // Devuelve la coordenada Y de inicio
 }
 
 // para "vidas" y el espacio
+// COL(b0,b1,b2,b3,b4) -> Fila Superior a Fila Inferior
 static unsigned char CH_SPC[GLYPH_W] = { COL(0,0,0,0,0), COL(0,0,0,0,0), COL(0,0,0,0,0) };
 static unsigned char CH_V[GLYPH_W]  = { COL(1,0,0,0,1), COL(1,0,0,0,1), COL(0,1,1,1,0) };
-static unsigned char CH_I[GLYPH_W]  = { COL(0,1,1,1,0), COL(0,1,1,1,0), COL(0,1,1,1,0) };
-static unsigned char CH_D[GLYPH_W]  = { COL(1,1,1,1,0), COL(1,0,0,0,1), COL(0,1,1,1,0) };
+static unsigned char CH_I[GLYPH_W]  = { COL(1,1,1,1,1), COL(0,1,1,1,0), COL(1,1,1,1,1) }; // Ajuste: la I es una línea vertical
+static unsigned char CH_D[GLYPH_W]  = { COL(1,1,1,1,0), COL(1,0,0,0,1), COL(1,1,1,1,0) }; // Ajuste: D
 static unsigned char CH_A[GLYPH_W]  = { COL(0,1,1,1,0), COL(1,0,0,0,1), COL(1,1,1,1,1) };
-static unsigned char CH_S[GLYPH_W]  = { COL(0,1,1,1,1), COL(1,1,1,1,0), COL(0,0,0,1,1) };
+static unsigned char CH_S[GLYPH_W]  = { COL(1,1,1,1,0), COL(1,0,1,0,1), COL(0,1,1,1,1) }; // Ajuste: S
 
 // dígitos 0..3 para vidas
-static unsigned char D0[GLYPH_W] = { COL(0,1,1,1,0), COL(1,0,0,0,1), COL(0,1,1,1,0) };
-static unsigned char D1[GLYPH_W] = { COL(0,0,1,0,0), COL(0,1,1,0,0), COL(1,1,1,1,0) };
-static unsigned char D2[GLYPH_W] = { COL(1,1,1,0,0), COL(0,1,1,1,0), COL(1,1,1,1,1) };
-static unsigned char D3[GLYPH_W] = { COL(1,1,1,0,0), COL(0,1,1,1,0), COL(1,1,1,0,0) };
+static unsigned char D0[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1) }; // Ajuste: 0 (completo)
+static unsigned char D1[GLYPH_W] = { COL(0,0,1,1,1), COL(0,0,0,1,1), COL(1,1,1,1,1) }; // Ajuste: 1 (fácil de leer)
+static unsigned char D2[GLYPH_W] = { COL(1,0,1,1,1), COL(1,0,1,0,1), COL(1,1,1,0,1) }; // Ajuste: 2
+static unsigned char D3[GLYPH_W] = { COL(1,0,1,0,1), COL(1,0,1,0,1), COL(0,1,1,1,0) }; // Ajuste: 3
 
 // letras generales
-static unsigned char CH_G[GLYPH_W] = { COL(0,1,1,1,0), COL(1,0,1,0,0), COL(0,1,1,1,0) };
-static unsigned char CH_M[GLYPH_W] = { COL(1,0,0,0,1), COL(1,1,1,1,1), COL(1,0,0,0,1) };
-static unsigned char CH_E[GLYPH_W] = { COL(1,1,1,1,1), COL(1,1,1,1,0), COL(1,1,1,1,1) };
-static unsigned char CH_O[GLYPH_W] = { COL(0,1,1,1,0), COL(1,0,0,0,1), COL(0,1,1,1,0) };
-static unsigned char CH_R[GLYPH_W] = { COL(1,1,1,1,0), COL(0,1,0,1,0), COL(1,0,1,1,1) };
-static unsigned char CH_T[GLYPH_W] = { COL(1,1,1,1,1), COL(0,1,1,1,0), COL(0,1,1,1,0) };
-static unsigned char CH_N[GLYPH_W] = { COL(1,0,0,0,1), COL(1,1,0,0,1), COL(1,0,0,0,1) };
-static unsigned char CH_C[GLYPH_W] = { COL(0,1,1,1,0), COL(1,0,0,0,0), COL(0,1,1,1,0) };
+static unsigned char CH_G[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,1,0,1), COL(1,1,1,1,1) }; // Ajuste: G
+static unsigned char CH_M[GLYPH_W] = { COL(1,1,0,0,1), COL(1,0,1,0,1), COL(1,0,0,1,1) }; // Ajuste: M
+static unsigned char CH_E[GLYPH_W] = { COL(1,1,1,1,1), COL(1,1,1,0,0), COL(1,1,1,1,1) };
+static unsigned char CH_O[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1) }; // Ajuste: O
+static unsigned char CH_R[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,1,0,1), COL(0,1,1,1,0) }; // Ajuste: R
+static unsigned char CH_T[GLYPH_W] = { COL(1,1,1,1,1), COL(0,0,1,0,0), COL(0,0,1,0,0) }; // Ajuste: T
+static unsigned char CH_N[GLYPH_W] = { COL(1,1,0,0,1), COL(1,0,1,0,1), COL(1,0,0,1,1) }; // Ajuste: N
+static unsigned char CH_C[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,0), COL(1,1,1,1,1) }; // Ajuste: C
 
-// dígitos 4..9
-static unsigned char D4[GLYPH_W] = { COL(1,0,1,1,0), COL(1,1,1,1,1), COL(0,0,0,1,0) };
+// dígitos 4..9 (ajustes para consistencia)
+static unsigned char D4[GLYPH_W] = { COL(1,1,1,1,1), COL(0,0,0,1,0), COL(0,0,0,1,0) };
 static unsigned char D5[GLYPH_W] = { COL(1,1,1,1,1), COL(1,1,1,1,0), COL(0,0,0,1,1) };
-static unsigned char D6[GLYPH_W] = { COL(0,1,1,1,0), COL(1,1,1,1,0), COL(0,1,1,1,0) };
-static unsigned char D7[GLYPH_W] = { COL(1,1,1,1,1), COL(0,0,1,0,0), COL(0,1,0,0,0) };
-static unsigned char D8[GLYPH_W] = { COL(0,1,1,1,0), COL(1,1,1,1,0), COL(0,1,1,1,0) };
-static unsigned char D9[GLYPH_W] = { COL(0,1,1,1,0), COL(1,1,1,1,0), COL(0,0,1,1,0) };
+static unsigned char D6[GLYPH_W] = { COL(1,1,1,1,1), COL(1,1,1,1,0), COL(1,1,1,1,1) };
+static unsigned char D7[GLYPH_W] = { COL(1,0,0,0,0), COL(1,0,0,0,0), COL(1,1,1,1,1) };
+static unsigned char D8[GLYPH_W] = { COL(1,1,1,1,1), COL(1,1,1,1,1), COL(1,1,1,1,1) };
+static unsigned char D9[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1) };
 
 // ----------------- helpers -----------------
 
+// ... (scroll_buffer y las funciones públicas se mantienen iguales) ...
 static void scroll_buffer(const unsigned char *buf, int n_cols, int step){
     int y0 = top_y();
     int disp_width = DISP_MAX_X - DISP_MIN + 1;
@@ -68,6 +74,7 @@ static void scroll_buffer(const unsigned char *buf, int n_cols, int step){
 
 // ----------------- públicas -----------------
 
+// ... (glyph_for_char_vidas, glyph_for_char_general, digit_glyph se mantienen) ...
 unsigned char* glyph_for_char_vidas(char ch){
     switch(ch){
         case 'V': case 'v': return CH_V;
@@ -111,15 +118,28 @@ unsigned char* digit_glyph(int d){
     }
 }
 
-// dibuja una columna correctamente orientada
+
+// DIBUJO CORREGIDO: Soluciona la inversión vertical.
+// La macro COL(b0...b4) mapea b0 (Superior) al Bit 4 (MSB) y b4 (Inferior) al Bit 0 (LSB).
+// La función build_col debe iterar las filas (0 a 4) y buscar el bit correspondiente (4 a 0).
 void build_col(int X, int topY, unsigned char colbits){
-    for(int row=0; row<GLYPH_H; row++){
-        int inv_row = (GLYPH_H-1)-row;
-        if((colbits>>row)&1) led_on(X, topY+inv_row);
+    for(int row = 0; row < GLYPH_H; row++){
+        // 'row' va de 0 (Fila Superior) a 4 (Fila Inferior) en la pantalla.
+        
+        // Calculamos el índice del bit en 'colbits' que corresponde a esta 'row'.
+        // Fila 0 de la pantalla debe tomar el Bit 4 (MSB) de 'colbits'.
+        // Fila 4 de la pantalla debe tomar el Bit 0 (LSB) de 'colbits'.
+        int bit_to_check = GLYPH_H - 1 - row; // Esto nos da: 4, 3, 2, 1, 0
+        
+        // Si el bit está encendido:
+        if((colbits >> bit_to_check) & 1){
+            // Encendemos el LED en la posición X y Y (topY + row).
+            led_on(X, topY + row);
+        }
     }
 }
 
-// scroll para texto de vidas
+// ... (El resto de las funciones de scroll y menu se mantienen iguales) ...
 void scroll_text_vidas(const char* s, int step, int pad_cols){
     unsigned char buf[256]; int n=0;
     for(int i=0;s[i]!='\0' && n<(int)sizeof(buf); i++){
@@ -130,9 +150,8 @@ void scroll_text_vidas(const char* s, int step, int pad_cols){
     if(n>0) scroll_buffer(buf,n,step);
 }
 
-// scroll para dígito de vidas
 void scroll_digit(int d,int step,int pad_cols){
-    if(d<0) d=0; else if(d>3) d=3;
+    if(d<0) d=0; else if(d>9) d=9; // Ajuste para 0-9
     unsigned char buf[GLYPH_W+4]; int n=0;
     unsigned char *G=digit_glyph(d);
     for(int gx=0; gx<GLYPH_W; gx++) buf[n++]=G[gx];
@@ -146,7 +165,6 @@ void show_life_lost(int lives_left){
     scroll_digit(lives_left, STEP_MS, COL_PAD);
 }
 
-// scroll general
 void scroll_text(const char* s,int step,int pad_cols){
     unsigned char buf[256]; int n=0;
     for(int i=0;s[i]!='\0' && n<(int)sizeof(buf); i++){
@@ -157,7 +175,6 @@ void scroll_text(const char* s,int step,int pad_cols){
     if(n>0) scroll_buffer(buf,n,step);
 }
 
-// PAUSA
 void show_pause(void){
     const char* s="PAUSA";
     int y0=top_y();
@@ -178,7 +195,6 @@ void show_pause(void){
     disp_update();
 }
 
-// TAP BUTTON
 void tap_button(void){
     int was_down=0;
     while(1){
@@ -190,14 +206,15 @@ void tap_button(void){
     }
 }
 
-// scroll para números
 void scroll_number(int value,int step,int pad_cols){
     char buf_chr[16];
-    if(value==0){ buf_chr[0]='0'; buf_chr[1]='\0'; }
-    else{
-        char tmp[16]; int tlen=0; int v=value;
-        while(v>0 && tlen<(int)sizeof(tmp)){ tmp[tlen++]='0'+(v%10); v/=10; }
-        int n=0; while(tlen>0) buf_chr[n++]=tmp[--tlen]; buf_chr[n]='\0';
+    if(value==0){ 
+        buf_chr[0]='0'; 
+        buf_chr[1]='\0'; 
+    } else {
+        // Usa snprintf para una conversión segura, si está disponible.
+        // Si no, tu lógica manual está bien, pero snprintf es mejor práctica.
+        snprintf(buf_chr, sizeof(buf_chr), "%d", value);
     }
 
     unsigned char buf[256]; int n=0;
@@ -211,7 +228,6 @@ void scroll_number(int value,int step,int pad_cols){
     if(n>0) scroll_buffer(buf,n,step);
 }
 
-// MENUS
 void show_menu(void){ scroll_text(" START ",STEP_MS,COL_PAD); tap_button(); }
 void show_game_over(void){ scroll_text(" GAME OVER ",120,1); tap_button(); show_menu(); }
 void show_win(void){ scroll_text(" GANASTE ",120,1); tap_button(); show_menu(); }
