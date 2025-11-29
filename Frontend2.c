@@ -11,9 +11,9 @@
 #include "Stage.h"
 
 
-// -----------------------------------
-// ESTADO DEL BOTÓN
-// -----------------------------------
+
+// Estado del botón
+
 static int pressed_prev = 0;
 static int hold = 0;
 
@@ -27,9 +27,9 @@ void pi_init (void) {
     hold = 0;
 }
 
-// -----------------------------------
-// JOYSTICK
-// -----------------------------------
+
+// Joystick
+
 void read_joy (joy_t *p) {
     
     p->move = p->pause = p->reset = p->quit = 0;
@@ -91,9 +91,9 @@ void read_joy (joy_t *p) {
     }
     pressed_prev = pressed;
 }
-// -----------------------------------
-// FRAME
-// -----------------------------------
+
+// Frame
+
 void sleep_frame (void) {
     struct timespec ts;
     ts.tv_sec  = 0;
@@ -112,9 +112,9 @@ void pi_clear (void) {
     disp_update();
 }
 
-// -----------------------------------
-// DIMENSIONES FÍSICAS DEL DISPLAY
-// -----------------------------------
+
+// Dimensiones fisicas del display
+
 int disp_w (void) { 
 	return 16; 
 }
@@ -124,9 +124,9 @@ int disp_h (void) {
 	return 16; 
 }
 
-// -----------------------------------
+
 // LED seguro
-// -----------------------------------
+
 void led_on (int x, int y) {
     
     if (x < 0 || x > 15 || y < 0 || y > 15) {
@@ -137,9 +137,9 @@ void led_on (int x, int y) {
     disp_write(p, D_ON);
 }
 
-// -----------------------------------
-// MAPEO de coordenadas del mundo
-// -----------------------------------
+
+// Mapeo de coordenadas del mundo
+
 
 int map_x (float x) {
     if (x < 0) {
@@ -171,9 +171,9 @@ return (int)lroundf(v * 15.0f);
 
 }
 
-// -----------------------------------
-// DIBUJO DE LADRILLOS
-// -----------------------------------
+
+// Dibujo de ladrillos
+
 void draw_bricks (game_t *g) {
     int display_w = 16; 
     
@@ -226,9 +226,9 @@ void draw_bricks (game_t *g) {
     }
 }
 
-// -----------------------------------
-// DIBUJO DE PAUSA
-// -----------------------------------
+
+// Dibujo de pausa
+
 void draw_pause (void) {
     for (int x = 0; x < 16; x++) {
         led_on(x, 0);
@@ -241,9 +241,9 @@ void draw_pause (void) {
     }
 }
 
-// -----------------------------------
-// DIBUJO GENERAL
-// -----------------------------------
+
+// Dibujo general
+
 void pi_draw (game_t *g) {
     disp_clear();
 
@@ -310,9 +310,8 @@ void esperar_boton_fuerte (void) {
     }
 }
 
-// -----------------------------------
 // EVENTS (Words)
-// -----------------------------------
+
 
 void events (game_t *g) {
     
