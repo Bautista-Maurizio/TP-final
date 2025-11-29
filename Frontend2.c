@@ -207,24 +207,25 @@ void draw_bricks (game_t *g) {
         }
         
         
-     for (int j = 0; j < BR_COLS; j++){
-            
-		     brick_t *b = &g->bricks[i][j]; 
-            
+        for (int j = 0; j < BR_COLS; j++){
+                
+            brick_t *b = &g->bricks[i][j]; 
+                
             if (b->alive) {	    
-            
-		     int X0 = (j * display_w) / BR_COLS; //inicio
-		     int X1 = ((j + 1) * display_w) / BR_COLS; //fin 
-             X1 = X1 - 1; //lo cierro 
+                    
+                int X0 = (j * display_w) / BR_COLS; //inicio
+                int X1 = ((j + 1) * display_w) / BR_COLS; //fin 
+                X1 = X1 - 1; //lo cierro 
 
-             if (X1 < X0) {
-            	X1 = X0; //almenos un led de ancho 
-	    	 }
-            //dibujo 
-            for (int x = X0; x <= X1; x++){
-                //pintamos solo si está dentro de la pantalla
-                if (x >= 0 && x < 16 && Y_final >= 0 && Y_final < 16) {
-                    led_on(x, Y_final);
+                if (X1 < X0) {
+                     X1 = X0; //almenos un led de ancho 
+                }
+                //dibujo 
+                for (int x = X0; x <= X1; x++){
+                    //pintamos solo si está dentro de la pantalla
+                    if (x >= 0 && x < 16 && Y_final >= 0 && Y_final < 16) {
+                        led_on(x, Y_final);
+                    }
                 }
             }
         }
@@ -321,7 +322,7 @@ void events (game_t *g) {
     static stage_t prev_stage_check = STAGE_TITLE;
     
     if (g->stage == STAGE_COUNTDOWN && prev_stage_check != STAGE_COUNTDOWN) {        
-            g->stage_tsec = 0.5; //medio segundo    
+        g->stage_tsec = 0.5; //medio segundo    
     }
     
     prev_stage_check = g->stage; 
@@ -368,7 +369,7 @@ void events (game_t *g) {
                 //muestro texto
                 show_game_over();     
                 
-                /puntaje 
+                //puntaje 
                 
                 disp_clear();
                 draw_score_static(g->score);
