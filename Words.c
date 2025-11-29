@@ -18,7 +18,7 @@ static unsigned char CH_SPC[GLYPH_W] = { COL(0,0,0,0,0), COL(0,0,0,0,0), COL(0,0
 static unsigned char CH_V[GLYPH_W]  = { COL(1,1,1,0,0), COL(0,0,0,1,1), COL(1,1,1,0,0) };
 static unsigned char CH_I[GLYPH_W]  = { COL(0,0,0,0,1), COL(1,1,1,1,1), COL(0,0,0,0,1) };
 static unsigned char CH_D[GLYPH_W]  = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(0,1,1,1,0) };
-static unsigned char CH_A[GLYPH_W]  = { COL(1,1,1,0,1), COL(0,0,0,0,1), COL(1,1,1,0,1) };
+static unsigned char CH_A[GLYPH_W] = {  COL(1,1,1,1,1), COL(1,0,1,0,1),COL(1,1,1,1,1)};
 static unsigned char CH_S[GLYPH_W]  = { COL(1,1,0,0,1), COL(1,1,1,1,1), COL(1,0,0,1,1) };
 
 // dígitos 0..3 para vidas (mantengo tus glyphs)
