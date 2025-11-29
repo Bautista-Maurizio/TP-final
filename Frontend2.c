@@ -94,7 +94,9 @@ void led_on(int x, int y){
     if (x < 0 || x > 15 || y < 0 || y > 15)
         return;
 
-    dcoord_t p = { x, y };
+    int Y = 15 - y;         
+
+    dcoord_t p = { x, Y };
     disp_write(p, D_ON);
 }
 
