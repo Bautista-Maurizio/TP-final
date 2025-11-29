@@ -5,64 +5,62 @@
 
 // vidas
 
-// centrado vertical del bloque de texto
+//centrado vertical del bloque de texto
 int top_y (void) {
-    int h = (DISP_MAX_Y - DISP_MIN) + 1;
-    int off = (h - GLYPH_H) / 2;
-    
+    int h = (DISP_MAX_Y - DISP_MIN) + 1; //alto del disp
+    int off = (h - GLYPH_H) / 2; //cuanto bajar para centrar 
+
+	//valido
     if (off < 0) {
     	 off = 0;
     }
    
-return DISP_MIN + off;
+return DISP_MIN + off; //posicion 
 
 }
 
-// glyphs para vidas y espacios
-static unsigned char CH_SPC[GLYPH_W] = { COL(0,0,0,0,0), COL(0,0,0,0,0), COL(0,0,0,0,0) };
-static unsigned char CH_V[GLYPH_W] = { COL(1,1,1,0,0), COL(0,0,0,1,1), COL(1,1,1,0,0) };
-static unsigned char CH_I[GLYPH_W] = { COL(1, 0, 0, 0, 1), COL(1, 1, 1, 1, 1), COL(1, 0, 0, 0, 1) };
-static unsigned char CH_D[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(0,1,1,1,0) };
-static unsigned char CH_A[GLYPH_W] = { COL(0, 1, 1, 1, 1), COL(1, 0, 1, 0, 0), COL(0, 1, 1, 1, 1) };
-static unsigned char CH_S[GLYPH_W] = { COL(1,1,0,0,1), COL(1,1,1,1,1), COL(1,0,0,1,1) };
+//cada letra o numero es un arreglo de 3x5 esto arma las letras y numeros 
+static unsigned char CH_SPC[GLYPH_W] = {COL(0,0,0,0,0), COL(0,0,0,0,0), COL(0,0,0,0,0)};
+static unsigned char CH_V[GLYPH_W] = { COL(1,1,1,0,0), COL(0,0,0,1,1), COL(1,1,1,0,0)};
+static unsigned char CH_I[GLYPH_W] = { COL(1,0,0,0,1), COL(1,1,1,1,1), COL(1,0,0,0,1)};
+static unsigned char CH_D[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(0,1,1,1,0)};
+static unsigned char CH_A[GLYPH_W] = { COL(0,1,1,1,1), COL(1,0,1,0,0), COL(0,1,1,1,1)};
+static unsigned char CH_S[GLYPH_W] = { COL(1,1,0,0,1), COL(1,1,1,1,1), COL(1,0,0,1,1)};
 
-// dígitos 0..3 para vidas
-static unsigned char D0[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1) };
-static unsigned char D1[GLYPH_W] = { COL(0, 0, 0, 0, 0), COL(1, 1, 1, 1, 1), COL(0, 0, 0, 0, 0) };
-static unsigned char D2[GLYPH_W] = { COL(1, 0, 1, 1, 1), COL(1, 0, 1, 0, 1), COL(1, 1, 1, 0, 1) };
-static unsigned char D3[GLYPH_W] = { COL(1, 0, 1, 0, 1), COL(1, 0, 1, 0, 1), COL(1, 1, 1, 1, 1) };
+//numeros 
+static unsigned char D0[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1)};
+static unsigned char D1[GLYPH_W] = { COL(0,0,0,0,0), COL(1,1,1,1,1), COL(0,0,0,0,0)};
+static unsigned char D2[GLYPH_W] = { COL(1,0,1,1,1), COL(1,0,1,0,1), COL(1,1,1,0,1)};
+static unsigned char D3[GLYPH_W] = { COL(1,0,1,0,1), COL(1,0,1,0,1), COL(1,1,1,1,1)};
 
-// letras generales 
-static unsigned char CH_G[GLYPH_W] = { COL(0, 1, 1, 1, 0), COL(1, 0, 0, 0, 1), COL(1, 0, 1, 1, 1) };
-static unsigned char CH_M[GLYPH_W] = { COL(1, 1, 1, 1, 1), COL(0, 0, 0, 1, 0), COL(1, 1, 1, 1, 1) };
-static unsigned char CH_E[GLYPH_W] = { COL(1, 1, 1, 1, 1), COL(1, 0, 1, 0, 1), COL(1, 0, 1, 0, 1) };
-static unsigned char CH_O[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1) };
-static unsigned char CH_R[GLYPH_W] = { COL(1, 1, 1, 1, 1), COL(1, 0, 1, 0, 0), COL(0, 1, 0, 1, 1) };
-static unsigned char CH_T[GLYPH_W] = { COL(1,0,0,0,0), COL(1,1,1,1,1), COL(1,0,0,0,0) };
-static unsigned char CH_N[GLYPH_W] = { COL(1, 1, 1, 1, 1), COL(0, 1, 1, 0, 0), COL(1, 1, 1, 1, 1) };
-static unsigned char CH_C[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,0,0,0,0) };
+//mas letras  
+static unsigned char CH_G[GLYPH_W] = { COL(0,1,1,1,0), COL(1,0,0,0,1), COL(1,0,1,1,1)};
+static unsigned char CH_M[GLYPH_W] = { COL(1,1,1,1,1), COL(0,0,0,1,0), COL(1,1,1,1,1)};
+static unsigned char CH_E[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,1,0,1), COL(1,0,1,0,1)};
+static unsigned char CH_O[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,1,1,1,1)};
+static unsigned char CH_R[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,1,0,0), COL(0,1,0,1,1)};
+static unsigned char CH_T[GLYPH_W] = { COL(1,0,0,0,0), COL(1,1,1,1,1), COL(1,0,0,0,0)};
+static unsigned char CH_N[GLYPH_W] = { COL(1,1,1,1,1), COL(0,1,1,0,0), COL(1,1,1,1,1)};
+static unsigned char CH_C[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,0,0,1), COL(1,0,0,0,0)};
 
-// dígitos 4 a 9
-static unsigned char D4[GLYPH_W] = { COL(1, 1, 1, 0, 0), COL(0, 0, 1, 0, 0), COL(1, 1, 1, 1, 1) };
-static unsigned char D5[GLYPH_W] = { COL(1, 1, 1, 0, 1), COL(1, 0, 1, 0, 1), COL(1, 0, 1, 1, 1) };
-static unsigned char D6[GLYPH_W] = { COL(1, 1, 1, 1, 1), COL(1, 0, 1, 0, 1), COL(1, 0, 1, 1, 1) };
-static unsigned char D7[GLYPH_W] = { COL(1, 0, 0, 0, 0), COL(1, 0, 0, 1, 1), COL(1, 1, 1, 0, 0) };
-static unsigned char D8[GLYPH_W] = { COL(1, 1, 1, 1, 1), COL(1, 0, 1, 0, 1), COL(1, 1, 1, 1, 1) };
-static unsigned char D9[GLYPH_W] = { COL(1, 1, 1, 0, 1), COL(1, 0, 1, 0, 1), COL(1, 1, 1, 1, 1) };
+//mas numeros para puntaje 
+static unsigned char D4[GLYPH_W] = { COL(1,1,1,0,0), COL(0,0,1,0,0), COL(1,1,1,1,1)};
+static unsigned char D5[GLYPH_W] = { COL(1,1,1,0,1), COL(1,0,1,0,1), COL(1,0,1,1,1)};
+static unsigned char D6[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,1,0,1), COL(1,0,1,1,1)};
+static unsigned char D7[GLYPH_W] = { COL(1,0,0,0,0), COL(1,0,0,1,1), COL(1,1,1,0,0)};
+static unsigned char D8[GLYPH_W] = { COL(1,1,1,1,1), COL(1,0,1,0,1), COL(1,1,1,1,1)};
+static unsigned char D9[GLYPH_W] = { COL(1,1,1,0,1), COL(1,0,1,0,1), COL(1,1,1,1,1)};
 
-// helpers
 
-// función interna: desplaza y dibuja un buffer de columnas (n_cols) en la pantalla
-
+///scrollea las letras 
 static void scroll_buffer (const unsigned char *buf, int n_cols, int step) {
     int y0 = top_y();
     int disp_width = DISP_MAX_X - DISP_MIN + 1;
 
-    // desplazamiento: inicio con todo el buffer fuera a la derecha
-    
+    //desplazamiento arranca con todo el buffer fuera a la derecha
     for (int off = 0; off < n_cols + disp_width; off++) {
         disp_clear();
-        // dibujo todas las columnas del buffer que caen dentro de la pantalla
+        //dibujo todas las columnas del buffer que caen dentro de la pantalla
         for (int c = 0; c < n_cols; c++) {
             int X = DISP_MAX_X - off + c;
             
@@ -80,11 +78,10 @@ static void scroll_buffer (const unsigned char *buf, int n_cols, int step) {
     disp_update();
 }
 
-// funciones públicas 
-
+//estas funciones se agarran las letras para armar las palabras 
 unsigned char* glyph_for_char_vidas(char ch) {
     if (ch == 'V' || ch == 'v') {
-   	return CH_V;
+   		return CH_V;
     }
    
     else if (ch == 'I' || ch == 'i') {
@@ -176,12 +173,12 @@ unsigned char* digit_glyph(int d){
     }
 }
 
-// dibuja una columna 
+//dibuja una columna 
 void build_col(int X, int topY, unsigned char colbits) {
     
     for (int row = 0; row < GLYPH_H; row++) {
         
-        if ((colbits >> row) & 1) {
+        if ((colbits >> row) & 1) { //si el bit row esta encendido pinto ese led 
             led_on(X, topY + row);
         }
     
@@ -189,19 +186,19 @@ void build_col(int X, int topY, unsigned char colbits) {
 
 }
 
-// Scroll para texto de vidas
+//scrolleo para vidas 
 void scroll_text_vidas (const char* s, int step, int pad_cols) {
     unsigned char buf[256];
-    int n = 0;
+    int n = 0; //cantidad de col usadas para hacer el texto 
     
-    for (int i = 0; s[i] != '\0' && n < (int)sizeof(buf); i++) {
+    for (int i = 0; s[i] != '\0' && n < sizeof(buf); i++) {
         unsigned char *G = glyph_for_char_vidas(s[i]);
         
-        for (int gx = 0; gx < GLYPH_W && n < (int)sizeof(buf); gx++) {
+        for (int gx = 0; gx < GLYPH_W && n < sizeof(buf); gx++) {
         	buf[n++] = G[gx];
         }
         
-        for (int p = 0; p < pad_cols && n < (int)sizeof(buf); p++) {
+        for (int p = 0; p < pad_cols && n < sizeof(buf); p++) {
         	buf[n++] = CH_SPC[0];
     	}
     
@@ -209,9 +206,10 @@ void scroll_text_vidas (const char* s, int step, int pad_cols) {
     	scroll_buffer(buf, n, step);
     }
 
+    }
 }
 
-// Scroll para un solo dígito (vidas)
+//scroll para un solo dígito 
 void scroll_digit (int d, int step, int pad_cols) {
     
     if (d < 0) {
@@ -222,7 +220,7 @@ void scroll_digit (int d, int step, int pad_cols) {
     	d = 3;
     }
     
-    unsigned char buf[GLYPH_W + 4];
+    unsigned char buf[GLYPH_W + 4]; //3 columnas y espacio 
     int n = 0;
     unsigned char *G = digit_glyph(d);
     
@@ -237,6 +235,7 @@ void scroll_digit (int d, int step, int pad_cols) {
     scroll_buffer(buf, n, step);
 }
 
+//muestra vidas y el num
 void show_life_lost (int lives_left) {
     if (lives_left < 0) {
     	lives_left = 0;
@@ -246,19 +245,19 @@ void show_life_lost (int lives_left) {
     scroll_digit(lives_left, STEP_MS, COL_PAD);
 }
 
-// Scroll general para texto
+//scrolleos general para los textos 
 void scroll_text (const char* s, int step, int pad_cols) {
     unsigned char buf[256];
     int n = 0;
     
-    for (int i = 0; s[i] != '\0' && n < (int)sizeof(buf); i++) {
+    for (int i = 0; s[i] != '\0' && n < sizeof(buf); i++) {
         unsigned char *G = glyph_for_char_general(s[i]);
         
-        for (int gx = 0; gx < GLYPH_W && n < (int)sizeof(buf); gx++) {
+        for (int gx = 0; gx < GLYPH_W && n < sizeof(buf); gx++) {
         	buf[n++] = G[gx];
         }
         
-        for (int p = 0; p < pad_cols && n < (int)sizeof(buf); p++) {
+        for (int p = 0; p < pad_cols && n < sizeof(buf); p++) {
         	buf[n++] = CH_SPC[0];
         }
     
@@ -269,134 +268,40 @@ void scroll_text (const char* s, int step, int pad_cols) {
     }
 }
 
-// Pausa estatica (muestro la palabra centrada durante 1s)
-void show_pause (void) {
-    const char* s = "PAUSA";
-    int y0 = top_y();
-
-    // ancho total en columnas = 5 letras * GLYPH_W + 4 * COL_PAD
-    
-    int total_cols = 5 * GLYPH_W + 4 * COL_PAD;
-    int start_x = DISP_MIN + ((DISP_MAX_X - DISP_MIN + 1) - total_cols) / 2;
-    
-    if (start_x < DISP_MIN) {
-    	start_x = DISP_MIN;
-    }
-    
-    disp_clear();
-    
-    for (int i = 0; s[i] != '\0'; i++) {
-       
-        unsigned char *G = glyph_for_char_general(s[i]);
-        
-        for (int gx = 0; gx < GLYPH_W; gx++) {
-            int X = start_x + i * (GLYPH_W + COL_PAD) + gx;
-            
-            if (X >= DISP_MIN && X <= DISP_MAX_X) {
-            	build_col(X, y0, G[gx]);
-            }
-        }
-    }
-    
-    disp_update();
-    usleep(1000000);
-    disp_clear();
-    disp_update();
-
-}
-
-// Tap button
+//espera el tap 
 void tap_button (void) {
-    int was_down = 0;
-    
-    while (1) { 
+    int was_down = 0; //boton estaba suelto 
+	int done=0; //0 espera, 1 detecto el tap 
+	
+    while (!done) { 
         
         joyinfo_t j = joy_read();
-        int pressed = (j.sw != J_NOPRESS) ? 1 : 0;
+        int pressed = (j.sw != J_NOPRESS) ? 1 : 0; //esta apretado?
         
         if (!was_down && pressed) {
-        	was_down = 1;
+        	was_down = 1; //apreto
         }
         
         else if (was_down && !pressed) {
-        	break;
+        	done=1; //apreto 
         }
         
-        usleep(10 * 1000);
+        usleep(10 * 1000); //10 ms entre lecturas 
     }
 }
 
-// Digitos para score 
-unsigned char* digit_glyph_for_score (int d) {
-    return digit_glyph(d);
-}
-
-// Scroll para números (puntaje)
-void scroll_number (int value, int step, int pad_cols) {
-    char buf_chr[16];
-    
-    if (value == 0){
-        
-        buf_chr[0] = '0';
-        buf_chr[1] = '\0';
-    } 
-    
-    else {
-        char tmp[16];
-        int tlen = 0;
-        int v = value;
-        
-        while (v > 0 && tlen < (int)sizeof(tmp)) {
-            tmp[tlen++] = '0' + (v % 10);
-            v /= 10;
-        }
-        
-        int n = 0;
-        
-        while (tlen > 0) buf_chr[n++] = tmp[--tlen] {
-             buf_chr[n] = '\0';
-   	}
-    }
-
-    unsigned char buf[256];
-    int n = 0;
-    
-    for (int i = 0; buf_chr[i] != '\0' && n < (int)sizeof(buf); i++) {
-        int d = buf_chr[i] - '0';
-        
-        if (d < 0 || d > 9) {
-        	d = 0;
-        }
-       
-        unsigned char *G = digit_glyph(d);
-        
-        for (int gx = 0; gx < GLYPH_W && n < (int)sizeof(buf); gx++) {
-        	buf[n++] = G[gx];
-        }
-        
-        for (int p = 0; p < pad_cols && n < (int)sizeof(buf); p++) {
-        	buf[n++] = CH_SPC[0];
-        }
-    }
-    
-    if (n > 0) {
-    	scroll_buffer(buf, n, step);
-    }
-
-}
-
-// Menus
+//lo que voy a escribir 
 
 void show_menu (void) {
     
     scroll_text(" START ", STEP_MS, COL_PAD);
-    tap_button();
+    tap_button(); //hay q tocar el boton para avanzar 
 }
 
 void show_game_over (void) {
     
     scroll_text(" GAME OVER ", 120, 1);
-    tap_button();
+    tap_button(); //confirmacion 
 
 }
 
@@ -407,31 +312,23 @@ void show_win (void) {
 
 }
 
-void show_score (int score) {
-    
-    scroll_text(" SCORE ", 100, 1);
-    scroll_number(score, 100, 1);
-    tap_button();
-
-}
-
+//dibuja el puntaje sin scrolleo
 void draw_score_static (int score) {
     disp_clear();
     
-    // Tope visual
-    
+    //tope visual
     if (score > 9999) {
     	score = 9999; 
     }
    
-    // Convertir int a string
-    
+    //convierto a string    
     char buf[16];
     int len = 0;
     int temp = score;
     
     if (temp == 0) {
-        buf[0] = '0'; len = 1;
+        buf[0] = '0'; 
+		len = 1;
     } 
     
     else {
@@ -450,9 +347,7 @@ void draw_score_static (int score) {
     
     buf[len] = '\0';
 
-    // Calcular Centro
-    // Ancho = (letras * 3) + (espacios)
-    
+    //calcular centro
     int ancho_total = (len * 3) + (len - 1);
     int start_x = (16 - ancho_total) / 2;
     
@@ -462,7 +357,7 @@ void draw_score_static (int score) {
    
     int top_y_val = top_y(); 
 
-    // Dibujar
+    //dibujo
     int current_x = start_x;
     
     for (int i=0; i<len; i++) {
@@ -475,7 +370,7 @@ void draw_score_static (int score) {
             }
             current_x++;
         }
-        current_x++; // Espacio
+        current_x++; //espacio entre digitos
     }
 
     // actualizo pantalla
