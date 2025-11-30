@@ -201,12 +201,14 @@ void scroll_text_vidas (const char* s, int step, int pad_cols) {
         for (int p = 0; p < pad_cols && n < sizeof(buf); p++) {
         	buf[n++] = CH_SPC[0];
     	}
+
+	}
     
     if (n > 0) {
     	scroll_buffer(buf, n, step);
     }
 
-    }
+    
 }
 
 //scroll para un solo dígito 
