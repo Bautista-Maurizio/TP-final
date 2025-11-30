@@ -1,0 +1,5 @@
+.vscode
+.idea
+*.o
+!lib/*.o
+.DS_Store
