@@ -5,10 +5,14 @@
 #include <allegro5/allegro_ttf.h>
 
 
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
+
 #ifndef ALLEGRO_H
 #define ALLEGRO_H
 
 #define FONT_ASSET_PATH "assets/font1.ttf"
+#define MUSIC_ASSET_PATH "assets/background.ogg"
 
 #define FPS 60.0
 
@@ -28,6 +32,9 @@ typedef struct {
     ALLEGRO_BITMAP* bmp_ball; //bola 
     ALLEGRO_FONT* font_small;  //texto para info
     ALLEGRO_FONT* font_big; //texto para titulos y contdown 
+    
+    // Audio
+    ALLEGRO_AUDIO_STREAM *music;
 
 }allegro_t;
 

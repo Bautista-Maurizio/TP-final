@@ -253,6 +253,25 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
     al_register_event_source(p->queue, al_get_keyboard_event_source());
     al_register_event_source(p->queue, al_get_mouse_event_source());
 
+    // Audio initialization
+    if (!al_install_audio()) {
+        fprintf(stderr, "failed to initialize audio!\n");
+    } else if (!al_init_acodec_addon()) {
+        fprintf(stderr, "failed to initialize audio codecs!\n");
+    } else {
+        if (!al_reserve_samples(1)) {
+            fprintf(stderr, "failed to reserve samples!\n");
+        }
+        
+        p->music = al_load_audio_stream(MUSIC_ASSET_PATH, 4, 2048);
+        if (!p->music) {
+            fprintf(stderr, "Audio clip sample not loaded! Path: %s\n", MUSIC_ASSET_PATH);
+        } else {
+            al_set_audio_stream_playmode(p->music, ALLEGRO_PLAYMODE_LOOP);
+            al_attach_audio_stream_to_mixer(p->music, al_get_default_mixer());
+        }
+    }
+
     al_start_timer(p->timer); //arranco el timer
     return 1; 
     
@@ -483,6 +502,9 @@ void allegro_shutdown(allegro_t* p){
     }
     if (p->font_small){ 
         al_destroy_font(p->font_small);
+    }
+    if (p->music) {
+        al_destroy_audio_stream(p->music);
     }
    
 }

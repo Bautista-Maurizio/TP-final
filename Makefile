@@ -17,7 +17,7 @@ CFLAGS_RASPI := -DUSE_RASPI -DPI_16x16 -I$(P_RASPI) -I$(P_LIB) -I$(P_ALLEGRO)
 
 # FLAGS DE LINKER
 
-LINKER_FLAGS_ALLEGRO := -lallegro_primitives -lallegro_image -lallegro_ttf -lallegro_font -lallegro -lm
+LINKER_FLAGS_ALLEGRO := -lallegro_primitives -lallegro_image -lallegro_ttf -lallegro_font -lallegro_audio -lallegro_acodec -lallegro -lm
 LINKER_FLAGS_RASPI := -lm
 
 # OBJETOS
