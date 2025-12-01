@@ -7,11 +7,16 @@
 #define MARGEN 1 // margen para que rebote  
 
 #define BR_LEFT 4 //margen izquierdo de la pared
-#define BR_TOP 64 //distancia desde el techo
+#ifdef PI_16x16
+    #define BR_TOP 0
+    #define BR_H 40
+#else
+    #define BR_TOP 64 //distancia desde el techo
+    #define BR_H  18 // alto de cada bloque
+#endif
 #define BR_COLS 12
 #define BR_ROWS 5
 #define BR_W ((ANCHO - 2*BR_LEFT) / BR_COLS)
-#define BR_H  18 // alto de cada bloque
 #define BALL_R 6 //radio de la bola
 
 #ifndef PI

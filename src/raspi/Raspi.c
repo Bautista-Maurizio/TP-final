@@ -188,23 +188,7 @@ void draw_bricks (game_t *g) {
     
     for (int i = 0; i < BR_ROWS; i++) {
  
-        int Y_final; //mapeo de filas reales del disp porque sino se superponen
-        
-        if (i == 4) {
-     		Y_final = 3; //fila de más abajo 
-        }
-        
-        else if (i == 3) {
-        	Y_final = 2; //fila siguiente 
-        }
-        
-        else if (i == 2) {
-        	Y_final = 1; //fila medio 
-        }
-        
-        else  {
-                Y_final = 0; //filas 0 y 1 
-        }
+        int Y_final = map_y(g->bricks[i][0].y);
         
         
         for (int j = 0; j < BR_COLS; j++){
