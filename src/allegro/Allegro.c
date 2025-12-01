@@ -392,11 +392,15 @@ void allegro_read_input(allegro_t* p, game_t *g, int* move, int* pause, int* res
 
 int allegro_should_draw(allegro_t* p)
 {
-    if ((redraw==1) && (al_is_event_queue_empty(p->queue))) {
-        redraw = 0;   
-        return 1; //update y dibuja
-    }
-    return 0; //todavua no dibuja
+    // if ((redraw==1) && (al_is_event_queue_empty(p->queue))) {
+    //     redraw = 0;   
+    //     return 1; //update y dibuja
+    // }
+    // return 0; //todavua no dibuja
+
+    int retval = redraw;
+    redraw = 0;
+    return retval;
 }
 
 //convierto de celda a pixel
