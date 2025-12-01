@@ -6,7 +6,7 @@
 #include <math.h>
 
 #ifdef USE_ALLEGRO
-#include "Frontend1.h"
+#include "Allegro.h"
 #endif
 
 //prototipos

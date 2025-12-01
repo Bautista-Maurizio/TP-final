@@ -1,4 +1,4 @@
-#include "Frontend1.h"
+#include "Allegro.h"
 #include "Backend.h"
 #include "Stage.h"
 #include <stdlib.h>
@@ -217,8 +217,8 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
     al_init_font_addon();
     al_init_ttf_addon();
 
-    p->font_big= al_load_ttf_font("font1.ttf", 64, 0);  //títulos y countdown
-    p->font_small= al_load_ttf_font("font1.ttf", 24, 0);  //info
+    p->font_big= al_load_ttf_font(FONT_ASSET_PATH, 64, 0);  //títulos y countdown
+    p->font_small= al_load_ttf_font(FONT_ASSET_PATH, 24, 0);  //info
 
     if (!p->font_big || !p->font_small) {
         if (p->font_big)   { 

@@ -5,9 +5,10 @@
 #include <allegro5/allegro_ttf.h>
 
 
-#ifndef FRONTEND1_H
-#define FRONTEND1_H
+#ifndef ALLEGRO_H
+#define ALLEGRO_H
 
+#define FONT_ASSET_PATH "assets/font1.ttf"
 
 #define FPS 60.0
 

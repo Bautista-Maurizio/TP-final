@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "Backend.h"
-#include "Frontend1.h"
+#include "Allegro.h"
 #include "Stage.h"
 
 int main(void) {

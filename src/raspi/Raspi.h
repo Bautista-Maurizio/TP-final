@@ -1,5 +1,5 @@
-#ifndef FRONTEND2_H
-#define FRONTEND2_H
+#ifndef RASPI_H
+#define RASPI_H
 
 #include "Backend.h"
 
