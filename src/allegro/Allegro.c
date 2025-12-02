@@ -256,9 +256,11 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
     // Audio initialization
     if (!al_install_audio()) {
         fprintf(stderr, "failed to initialize audio!\n");
-    } else if (!al_init_acodec_addon()) {
+    } 
+    else if (!al_init_acodec_addon()) {
         fprintf(stderr, "failed to initialize audio codecs!\n");
-    } else {
+    } 
+    else {
         if (!al_reserve_samples(1)) {
             fprintf(stderr, "failed to reserve samples!\n");
         }
@@ -266,7 +268,8 @@ int allegro_init(allegro_t* p,  game_t* g, int pixel_1, int pixel_2) {
         p->music = al_load_audio_stream(MUSIC_ASSET_PATH, 4, 2048);
         if (!p->music) {
             fprintf(stderr, "Audio clip sample not loaded! Path: %s\n", MUSIC_ASSET_PATH);
-        } else {
+        } 
+        else {
             al_set_audio_stream_playmode(p->music, ALLEGRO_PLAYMODE_LOOP);
             al_attach_audio_stream_to_mixer(p->music, al_get_default_mixer());
         }
@@ -390,14 +393,7 @@ void allegro_read_input(allegro_t* p, game_t *g, int* move, int* pause, int* res
     }
 }
 
-int allegro_should_draw(allegro_t* p)
-{
-    // if ((redraw==1) && (al_is_event_queue_empty(p->queue))) {
-    //     redraw = 0;   
-    //     return 1; //update y dibuja
-    // }
-    // return 0; //todavua no dibuja
-
+int allegro_should_draw(allegro_t* p){
     int retval = redraw;
     redraw = 0;
     return retval;
