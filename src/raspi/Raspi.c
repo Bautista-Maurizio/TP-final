@@ -28,78 +28,88 @@ void pi_init(void){
 //joystick
 
 void read_joy(joy_t *p) {   
-    p->move=0; 
-	p->pause=0; 
-	p->reset=0;
-	p->quit= 0;
+    p->move = 0; 
+    p->pause = 0; 
+    p->reset = 0;
+    p->quit = 0;
 
-    //leer joystick
-    joyinfo_t j = joy_read();
+    joyinfo_t j = joy_read(); //leer joystick
 
-    //movimiento
+    //movimiento 
     int ax = j.x;
     int ay = j.y;
-
-	int v;
-	int absx = (ax >= 0) ? ax : -ax;  //|ax|
-	int absy = (ay >= 0) ? ay : -ay;  //|ay|
-	
-	if (absx >= absy) {
-	    v = ax;//domina x
-	} 
-	else {
-	    v = ay; //domina y
-	}
-	
-    int dz = MOVE;                 
-    	
-    	if (dz < 80) {
-    		dz = 80; //aseguro minimo ochenta          
-    	}
+    int v;
+    int absx = (ax >= 0) ? ax : -ax; //modulo de ax
+    int absy = (ay >= 0) ? ay : -ay; //modulo de ay
     
-    	if (v >  dz) {
-   		p->move = +1;   //derecha
-    	}
-    
-	   	else if (v < -dz) {
-	   		p->move = -1;   //izquierda
-	    }
-	    
-	    else {
-	    	p->move =  0; //zona muerta, quieto
-		}
-    
-    //boton, tap corto para pausa, tap largo para reset
-    static int hold_ms = 0; //acumula los ms que esta presionando 
-
-    int pressed = (j.sw != J_NOPRESS); //esta apretado?
-    	
-    	if (pressed) {
-    		 hold_ms += (int)(DT * 1000.0); //sumo el tiempo que esta siendo presionado
-    	}
-    
-    	if (!pressed_prev && pressed) {
-    		 hold_ms = 0; //recien empezo a apretar entonces reinicio contador 
-    	}
-
-    	if (pressed_prev && !pressed) { //solto el boton 
-        	if (hold_ms >= HOLD_FOR_QUIT) {
-        	      	p->quit= 1; //mantener mucho tiempo salir 
-        	}
-        	
-        	else if (hold_ms >= HOLD_FOR_RESET) {
-        		p->reset = 1; //manetener un poco reset
-        	}
-        	
-        	else {
-        	        p->pause = 1;  //tap corto
-       		}
-       
-        hold_ms = 0; //reseteo contador 
+    if (absx >= absy){
+        v = ax; //domina x
     }
-    pressed_prev = pressed; //actualizo estado previo 
-}
+    else{
+        v = ay; //domina y
+    }
+    
+    int dz = MOVE;                 
+    if (dz < 40){
+        dz = 40; //ignoramos valores menores a cuarenta porque el joysticj nunca queda perfectamente en cero 
+    }
 
+    if (v > dz){
+        p->move = +1; //derecha 
+    }
+    else if (v < -dz){
+        p->move = -1; //izquierda
+    }
+    else{ 
+        p->move =  0; //quieto
+    }
+
+    //filtro antiruido
+    static int contador_ruido = 0; //cuenta cuántos frames seguidos está apretado
+    
+    int lectura_actual = j.sw; //sw switch del joystick (lee el boton)
+
+    if (lectura_actual == 1) {
+        //si hay señal, aumentamos el contador (tope en 100)
+        if(contador_ruido < 100){
+            contador_ruido++;
+        }
+    } 
+    else {
+        //si no hay señal, resete todo (era ruido o soltó)
+        contador_ruido = 0;
+        pressed_prev = 0; //permite volver a pulsar
+        hold = 0; //resetea el hold de reinicio
+    }
+
+    //solo acepta el botón si estuvo apretado 5 frames seguidos para ignorar el ruido 
+    if (contador_ruido >= 5) {
+        
+        if (!pressed_prev) {
+            p->pause = 1; //pausa
+            pressed_prev = 1; 
+        }
+
+        //reset hold mantenido 
+        hold++;
+        
+        #ifdef HOLD_FOR_RESET //protejo por las dudas 
+            if (hold > (HOLD_FOR_RESET/16)){
+                p->reset = 1; 
+             }
+            if (hold > (HOLD_FOR_QUIT/16)){  
+                p->quit = 1;
+             }
+        #else
+            if (hold > 100){
+                p->reset = 1;
+            }
+            if (hold > 500){
+                p->quit = 1;
+            }
+        #endif
+    }
+}
 //frame
 
 void sleep_frame (void) {
