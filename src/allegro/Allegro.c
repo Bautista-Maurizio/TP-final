@@ -443,8 +443,7 @@ void allegro_draw(allegro_t* p, game_t* g){
     float y_px    =  g->vaus.y * p->sy;
 
     float dst_w = (2.0f * g->vaus.half) * p->sx; //ancho que usa la lógica del juego
-    float dst_h = al_get_bitmap_height(p->bmp_paddle); //alto del PNG
-
+    float dst_h = al_get_bitmap_height(p->bmp_paddle); 
     y_px -= (dst_h - p->sy) * 0.5;
 
     al_draw_scaled_bitmap(p->bmp_paddle, 0, 0, al_get_bitmap_width(p->bmp_paddle), al_get_bitmap_height(p->bmp_paddle), left_px, y_px, dst_w, dst_h, 0);
