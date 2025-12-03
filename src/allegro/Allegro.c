@@ -284,11 +284,11 @@ int redraw=0; //1 hay que dibujar, 0 no hay que dibujar
 
 void allegro_read_input(allegro_t* p, game_t *g, int* move, int* pause, int* reset, int* quit){
     ALLEGRO_EVENT ev; 
-    static int left_down  = 0;
+    static int left_down= 0;
     static int right_down = 0;
     
     if (move) {
-        *move  = 0;
+        *move= 0;
     }
 
     //saco eventos de la cola 
@@ -322,7 +322,9 @@ void allegro_read_input(allegro_t* p, game_t *g, int* move, int* pause, int* res
             }
             else if (k == ALLEGRO_KEY_M){
                 //para el reset (con la letra M)
-                *reset=1;            
+                game_init(g);
+                g->pause=0;
+                g->game_over=0;
             }
             else if(k == ALLEGRO_KEY_ESCAPE){
                 //salir del juego con esc 
